@@ -3,8 +3,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+
     container_name: devops-task-manager-compose
+
     ports:
       - "8000:8000"
-    env_file:
-      - .env
+
+    environment:
+      APP_ENV: production
+      APP_KEY: ${APP_KEY}
+      DB_CONNECTION: sqlite
+
+    command: >
+      sh -c "
+      touch database/database.sqlite &&
+      php artisan migrate --force &&
+      php artisan serve --host=0.0.0.0 --port=8000
+      "
